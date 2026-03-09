@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Armadio — Your wardrobe, organized</title>
+  <meta name="description" content="Track your fashion wardrobe and remember your size for every brand. Add items manually or snap a photo and let AI do the rest.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="landing">
+  <nav class="landing-nav">
+    <a href="index.html" class="logo">
+      <span class="logo-icon" aria-hidden="true">
+        <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle class="logo-outer" cx="16" cy="16" r="15"/>
+          <path class="logo-triangle" d="M16 9.3 L21.8 19.3 L10.2 19.3 Z"/>
+        </svg>
+      </span>
+      Armadio
+    </a>
+    <a href="settings.html" class="nav-link">Settings</a>
+  </nav>
+
+  <main class="landing-main">
+    <header class="hero">
+      <div class="hero-inner">
+        <div class="hero-text">
+          <h1 class="hero-title">Armadio</h1>
+          <p class="hero-tagline">Your wardrobe, organized.<br><span class="hero-tagline-line2">Every piece. Every size. Every brand.</span></p>
+        </div>
+        <div class="hero-add">
+          <button type="button" class="add-hero-btn" id="add-manually-card" aria-label="Add item">
+            <span class="add-hero-btn-icon" aria-hidden="true">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M12 5v14M5 12h14"/></svg>
+            </span>
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <section class="items-section" aria-labelledby="items-heading">
+      <div class="items-section-header">
+        <h2 class="section-label" id="items-heading">Your wardrobe, 0 items</h2>
+        <button type="button" class="items-view-toggle" id="items-view-toggle" aria-label="Switch to grid view" hidden>
+          <span class="items-view-toggle-label">GRID</span>
+          <span class="items-view-toggle-icon" id="items-view-toggle-icon" aria-hidden="true"></span>
+        </button>
+      </div>
+      <ul class="items-list" id="items-list"></ul>
+      <div class="items-grid" id="items-grid" aria-hidden="true"></div>
+      <div class="items-empty" id="items-empty" role="status">
+        <div class="items-empty-icon" aria-hidden="true">
+          <img src="assets/coat-hanger.png" alt="" width="48" height="48" class="items-empty-icon-img">
+        </div>
+        <h3 class="items-empty-title">Your wardrobe is empty</h3>
+        <p class="items-empty-desc">Add your first item to start tracking brands, sizes, and colors in one place.</p>
+        <button type="button" class="items-empty-cta" id="items-empty-add-btn" aria-label="Add your first item">Add your first item</button>
+      </div>
+    </section>
+
+    <section class="style-section" aria-labelledby="style-heading">
+      <h2 class="section-label" id="style-heading">Your style</h2>
+      <p class="style-summary hero-tagline" id="style-summary">Add items to learn about your style.</p>
+    </section>
+
+  </main>
+
+  <footer class="landing-footer">
+    <span class="footer-brand">Armadio</span>
+    <p class="cta-text">One place for everything you own. Sizes you'll actually remember.</p>
+  </footer>
+
+  <div class="modal-backdrop" id="add-modal-backdrop" aria-hidden="true">
+    <div class="modal" id="add-modal" role="dialog" aria-labelledby="modal-title" aria-modal="true">
+      <div class="modal-header">
+        <h2 class="modal-title" id="modal-title">Add item</h2>
+        <button type="button" class="modal-close" id="add-modal-close" aria-label="Close">×</button>
+      </div>
+      <form class="add-item-form" id="add-item-form">
+        <div class="add-modal-layout">
+          <div class="add-modal-left">
+            <div class="edit-form-fields">
+              <div class="form-field">
+                <label for="field-item-type">Item type</label>
+                <div class="autocomplete-wrap">
+                  <input type="text" id="field-item-type" name="itemType" placeholder="e.g. Shirt, Jacket, Sneakers" autocomplete="off" required data-autocomplete="itemType">
+                  <ul class="autocomplete-list" id="autocomplete-list" role="listbox" aria-expanded="false"></ul>
+                </div>
+              </div>
+              <div class="form-field">
+                <label for="field-brand">Brand</label>
+                <div class="autocomplete-wrap">
+                  <input type="text" id="field-brand" name="brand" placeholder="e.g. Zara, Levi's" autocomplete="off" required data-autocomplete="brand">
+                  <ul class="autocomplete-list" id="autocomplete-list-brand" role="listbox" aria-expanded="false"></ul>
+                </div>
+              </div>
+              <div class="form-field">
+                <label for="field-size">Size</label>
+                <div class="autocomplete-wrap">
+                  <input type="text" id="field-size" name="size" placeholder="e.g. M, 42, 10" autocomplete="off" required data-autocomplete="size">
+                  <ul class="autocomplete-list" id="autocomplete-list-size" role="listbox" aria-expanded="false"></ul>
+                </div>
+              </div>
+              <div class="form-field">
+                <label for="field-color">Color</label>
+                <div class="autocomplete-wrap">
+                  <input type="text" id="field-color" name="color" placeholder="e.g. Navy, Black" autocomplete="off" required data-autocomplete="color">
+                  <ul class="autocomplete-list" id="autocomplete-list-color" role="listbox" aria-expanded="false"></ul>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="add-modal-right">
+            <div class="form-field add-item-photo-field">
+              <label>Photo</label>
+              <input type="file" id="add-item-photo-file" accept="image/*" class="photo-file-input" aria-label="Choose image file">
+              <input type="file" id="add-item-photo-camera" accept="image/*" capture="environment" class="photo-file-input" aria-label="Take photo">
+              <div class="add-item-photo-drop" id="add-item-photo-drop">
+                <div class="add-item-photo-preview" id="add-item-photo-preview" hidden>
+                  <img id="add-item-photo-preview-img" src="" alt="">
+                  <button type="button" class="add-item-photo-remove" id="add-item-photo-remove" aria-label="Remove photo" hidden>×</button>
+                </div>
+                <div class="add-item-photo-empty" id="add-item-photo-empty">
+                  <div class="add-item-photo-empty-content">
+                    <span class="add-item-photo-empty-icon" aria-hidden="true">
+                      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <g class="add-item-photo-icon-arrow">
+                          <line x1="12" y1="0" x2="12" y2="11"/>
+                          <polyline points="7 6 12 11 17 6"/>
+                        </g>
+                      </svg>
+                    </span>
+                    <span class="add-item-photo-empty-text">Select a photo or drop it here!</span>
+                  </div>
+                  <div class="add-item-photo-actions">
+                    <button type="button" class="add-item-photo-btn" id="add-item-photo-camera-btn">Take photo</button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions modal-actions--row">
+          <button type="submit" class="modal-btn modal-submit" id="modal-submit" aria-label="Add item">Add item</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="delete-confirm-backdrop" aria-hidden="true">
+    <div class="modal modal--small" id="delete-confirm-modal" role="alertdialog" aria-labelledby="delete-confirm-title" aria-modal="true">
+      <h2 class="modal-title" id="delete-confirm-title">Remove item?</h2>
+      <p class="modal-message">You sure you want to remove this item?</p>
+      <div class="modal-actions modal-actions--row">
+        <button type="button" class="modal-btn modal-btn--secondary" id="delete-confirm-no">No</button>
+        <button type="button" class="modal-btn modal-btn--danger" id="delete-confirm-yes">Yes</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="photo-modal-backdrop" aria-hidden="true">
+    <div class="modal" id="photo-modal" role="dialog" aria-labelledby="photo-modal-title" aria-modal="true">
+      <div class="modal-header">
+        <div class="photo-modal-header-text">
+          <h2 class="modal-title" id="photo-modal-title">Add photo</h2>
+          <p class="photo-modal-subtitle" id="photo-modal-subtitle" aria-live="polite"></p>
+        </div>
+        <button type="button" class="modal-close" id="photo-modal-close" aria-label="Close">×</button>
+      </div>
+      <div class="photo-modal-body">
+        <input type="file" id="photo-file-input" accept="image/*" class="photo-file-input" aria-label="Choose image file">
+        <label class="photo-drop-zone" id="photo-drop-zone" for="photo-file-input">
+          <span class="photo-drop-text">Drag and drop a photo here, or click to choose from your device.</span>
+        </label>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="photo-preview-backdrop" aria-hidden="true">
+    <button type="button" class="photo-preview-arrow photo-preview-prev" id="photo-preview-prev" aria-label="Previous item">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <button type="button" class="photo-preview-arrow photo-preview-next" id="photo-preview-next" aria-label="Next item">
+      <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+    <div class="photo-preview-modal" id="photo-preview-modal" role="dialog" aria-modal="true">
+      <button type="button" class="photo-preview-close" id="photo-preview-close" aria-label="Close">×</button>
+      <img class="photo-preview-img" id="photo-preview-img" src="" alt="">
+      <div class="photo-preview-details" id="photo-preview-details"></div>
+    </div>
+  </div>
+
+  <div class="modal-backdrop" id="edit-modal-backdrop" aria-hidden="true">
+    <div class="modal" id="edit-modal" role="dialog" aria-labelledby="edit-modal-title" aria-modal="true">
+      <h2 class="modal-title" id="edit-modal-title">Edit item</h2>
+      <form class="edit-item-form" id="edit-item-form">
+        <div class="edit-form-fields">
+          <div class="form-field">
+            <label for="edit-field-item-type">Item type</label>
+            <div class="autocomplete-wrap">
+              <input type="text" id="edit-field-item-type" name="itemType" autocomplete="off" required data-autocomplete="itemType">
+              <ul class="autocomplete-list" id="autocomplete-list-edit-itemType" role="listbox" aria-expanded="false"></ul>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="edit-field-brand">Brand</label>
+            <div class="autocomplete-wrap">
+              <input type="text" id="edit-field-brand" name="brand" autocomplete="off" required data-autocomplete="brand">
+              <ul class="autocomplete-list" id="autocomplete-list-edit-brand" role="listbox" aria-expanded="false"></ul>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="edit-field-size">Size</label>
+            <div class="autocomplete-wrap">
+              <input type="text" id="edit-field-size" name="size" autocomplete="off" required data-autocomplete="size">
+              <ul class="autocomplete-list" id="autocomplete-list-edit-size" role="listbox" aria-expanded="false"></ul>
+            </div>
+          </div>
+          <div class="form-field">
+            <label for="edit-field-color">Color</label>
+            <div class="autocomplete-wrap">
+              <input type="text" id="edit-field-color" name="color" autocomplete="off" required data-autocomplete="color">
+              <ul class="autocomplete-list" id="autocomplete-list-edit-color" role="listbox" aria-expanded="false"></ul>
+            </div>
+          </div>
+        </div>
+        <div class="modal-actions modal-actions--row">
+          <button type="button" class="modal-btn modal-btn--secondary" id="edit-cancel">Cancel</button>
+          <button type="submit" class="modal-btn modal-submit" id="edit-save">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="fab-answer-box" id="fab-answer-box" aria-live="polite" role="status">
+    <div class="fab-answer-header">
+      <button type="button" class="fab-answer-close" id="fab-answer-close" aria-label="Close">×</button>
+    </div>
+    <div class="fab-answer-content" id="fab-answer-content"></div>
+  </div>
+  <div class="fab-wrap" id="fab-wrap">
+    <form class="fab-form" id="fab-form">
+      <span class="fab-icon" aria-hidden="true">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>
+      </span>
+      <input type="text" class="fab-input" id="fab-input" placeholder="Ask Armadio" autocomplete="off" aria-label="Ask Armadio about your wardrobe">
+    </form>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/sortablejs@1.15.2/Sortable.min.js" crossorigin="anonymous"></script>
+  <script src="theme.js"></script>
+  <script src="app.js?v=2"></script>
+</body>
+</html>

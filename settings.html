@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Settings</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="settings.html">Settings</a>
+  </nav>
+  <main>
+    <h1>Settings</h1>
+    <section class="settings-section">
+      <h2 class="section-label">Profile</h2>
+      <div class="setting-row">
+        <label for="profile-name">Name</label>
+        <input type="text" id="profile-name" class="setting-input" placeholder="First name" autocomplete="given-name">
+      </div>
+      <div class="setting-row">
+        <label for="profile-last-name">Last name</label>
+        <input type="text" id="profile-last-name" class="setting-input" placeholder="Last name" autocomplete="family-name">
+      </div>
+    </section>
+    <section class="settings-section">
+      <h2 class="section-label">Appearance</h2>
+      <div class="setting-row">
+        <label for="dark-mode-toggle">Dark mode</label>
+        <button type="button" id="dark-mode-toggle" class="toggle" role="switch" aria-checked="false">
+          <span class="toggle-track">
+            <span class="toggle-thumb"></span>
+          </span>
+        </button>
+      </div>
+    </section>
+  </main>
+  <script src="theme.js"></script>
+  <script src="settings.js"></script>
+</body>
+</html>
