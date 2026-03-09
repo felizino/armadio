@@ -1921,6 +1921,14 @@ a:hover {
   gap: 10px;
   font-size: 0.8125rem;
   line-height: 1.45;
+  max-height: 60vh;
+  overflow-y: auto;
+}
+
+.fab-answer-content .fab-exchange {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
 }
 
 .fab-answer-content .fab-msg-q {
@@ -1977,4 +1985,149 @@ a:hover {
 
 .fab-wrap.is-thinking .fab-input::placeholder {
   color: var(--landing-muted);
+}
+
+/* ----- Mobile layout (phones & small screens) ----- */
+@media (max-width: 768px) {
+  .landing-nav {
+    padding: 0.875rem max(1rem, env(safe-area-inset-right)) max(0.875rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  }
+
+  .landing-main {
+    padding: 2rem max(1rem, env(safe-area-inset-right)) 5rem max(1rem, env(safe-area-inset-left));
+  }
+
+  .hero-inner {
+    gap: 1rem;
+  }
+
+  .hero-title {
+    font-size: clamp(1.75rem, 6vw, 2.25rem);
+  }
+
+  .hero-tagline {
+    font-size: 1rem;
+  }
+
+  .add-hero-btn {
+    width: 56px;
+    height: 56px;
+  }
+
+  .add-hero-btn-icon svg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .items-section-header {
+    flex-wrap: wrap;
+  }
+
+  .items-list li {
+    padding: 0.75rem max(0.75rem, env(safe-area-inset-right)) 0.75rem max(0.75rem, env(safe-area-inset-left));
+    min-height: 64px;
+  }
+
+  .items-list .item-photo,
+  .items-list .item-photo--placeholder {
+    flex: 0 0 56px;
+    width: 56px;
+    height: 56px;
+    min-width: 56px;
+    min-height: 56px;
+  }
+
+  .landing-footer {
+    padding: 1rem max(1rem, env(safe-area-inset-right)) max(1rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  }
+
+  /* Modals: full-bleed on mobile with safe area */
+  .modal-backdrop {
+    padding: max(0.75rem, env(safe-area-inset-top)) max(0.75rem, env(safe-area-inset-right)) max(0.75rem, env(safe-area-inset-bottom)) max(0.75rem, env(safe-area-inset-left));
+    align-items: flex-end;
+  }
+
+  .modal {
+    max-width: none;
+    width: 100%;
+    border-radius: 16px 16px 0 0;
+    padding: 1.25rem max(1rem, env(safe-area-inset-right)) max(1.25rem, env(safe-area-inset-bottom)) max(1rem, env(safe-area-inset-left));
+  }
+
+  #add-modal.modal {
+    max-height: 90vh;
+    overflow-y: auto;
+  }
+
+  .modal-close {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+
+  /* FAB & answer box: safe area and full-width answer on mobile */
+  .fab-wrap {
+    bottom: max(1rem, env(safe-area-inset-bottom));
+    right: max(1rem, env(safe-area-inset-right));
+  }
+
+  .fab-wrap:hover,
+  .fab-wrap.fab-expanded {
+    width: min(280px, calc(100vw - 2rem));
+  }
+
+  .fab-answer-box {
+    left: max(1rem, env(safe-area-inset-left));
+    right: max(1rem, env(safe-area-inset-right));
+    width: auto;
+    bottom: calc(max(1rem, env(safe-area-inset-bottom)) + 56px + 12px);
+    max-width: none;
+  }
+
+  .fab-answer-content {
+    max-height: 50vh;
+  }
+
+  .fab-answer-close {
+    width: 44px;
+    height: 44px;
+    min-width: 44px;
+    min-height: 44px;
+  }
+}
+
+@media (max-width: 480px) {
+  .landing-main {
+    padding: 1.5rem max(0.75rem, env(safe-area-inset-right)) 4.5rem max(0.75rem, env(safe-area-inset-left));
+  }
+
+  .hero {
+    margin-bottom: 1.75rem;
+  }
+
+  .items-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .style-section {
+    margin-bottom: 2.5rem;
+  }
+
+  .items-grid-card {
+    margin-bottom: 0.5rem;
+  }
+
+  .add-modal-layout {
+    gap: 1rem;
+  }
+
+  /* Settings page (non-landing) */
+  main {
+    padding: 1.5rem max(1rem, env(safe-area-inset-right)) 2rem max(1rem, env(safe-area-inset-left));
+  }
+
+  nav {
+    padding: 0.75rem max(1rem, env(safe-area-inset-right)) 0.75rem max(1rem, env(safe-area-inset-left));
+  }
 }

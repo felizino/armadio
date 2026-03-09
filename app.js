@@ -3,6 +3,17 @@
 
   const STORAGE_KEY = 'armadio-items';
 
+  /** For "how many X?" – map question word to item-type stems that belong to that category (e.g. pants → jeans, pants, shorts). */
+  const typeCategoryStems = {
+    pants: ['pant', 'jeans', 'trouser', 'short'],
+    shirts: ['shirt', 'tee', 'polo'],
+    jackets: ['jacket', 'coat', 'blazer', 'vest'],
+    shoes: ['sneaker', 'boot', 'loafer', 'shoe'],
+    sweaters: ['sweater', 'cardigan', 'hoodie', 'jumper'],
+    dresses: ['dress'],
+    skirts: ['skirt']
+  };
+
   const suggestionData = {
     itemType: ['Shirt', 'T-Shirt', 'Pants', 'Jeans', 'Jacket', 'Coat', 'Sweater', 'Dress', 'Skirt', 'Shorts', 'Sneakers', 'Boots', 'Loafers', 'Blazer', 'Hoodie', 'Cardigan', 'Vest', 'Polo', 'Jumper'],
     brand: ['Theory', 'Zara', 'Nike', 'Adidas', 'Uniqlo', "Levi's", 'H&M', 'COS', 'Everlane', 'Reformation', 'Allbirds', 'Common Projects', 'J.Crew', 'Madewell', 'Patagonia', 'The North Face', 'Gucci', 'Prada', 'Saint Laurent', 'Acne Studios'],
@@ -429,17 +440,55 @@
     const box = document.getElementById('fab-answer-box');
     if (!answerEl || !box) return;
 
+    var pendingAnswerContainer = null;
+
+    function scrollToBottom() {
+      answerEl.scrollTop = answerEl.scrollHeight;
+    }
+
     function showAnswer(html) {
-      answerEl.innerHTML = (questionDisplay ? '<p class="fab-msg-q">' + escapeHtml(questionDisplay) + '</p>' : '') + html;
+      if (pendingAnswerContainer) {
+        pendingAnswerContainer.innerHTML = html;
+        pendingAnswerContainer = null;
+      } else {
+        var exchange = document.createElement('div');
+        exchange.className = 'fab-exchange';
+        if (questionDisplay) {
+          var qEl = document.createElement('p');
+          qEl.className = 'fab-msg-q';
+          qEl.textContent = questionDisplay;
+          exchange.appendChild(qEl);
+        }
+        var aWrap = document.createElement('div');
+        aWrap.className = 'fab-msg-a-wrap';
+        aWrap.innerHTML = html;
+        exchange.appendChild(aWrap);
+        answerEl.appendChild(exchange);
+      }
       box.classList.add('is-visible');
+      scrollToBottom();
     }
 
     function showThinkingThen(fn) {
-      answerEl.innerHTML = '<p class="fab-msg-thinking"><span class="fab-thinking-dots"><span></span><span></span><span></span></span></p>';
+      var exchange = document.createElement('div');
+      exchange.className = 'fab-exchange';
+      if (questionDisplay) {
+        var qEl = document.createElement('p');
+        qEl.className = 'fab-msg-q';
+        qEl.textContent = questionDisplay;
+        exchange.appendChild(qEl);
+      }
+      var answerPlaceholder = document.createElement('div');
+      answerPlaceholder.className = 'fab-msg-a-wrap';
+      answerPlaceholder.innerHTML = '<p class="fab-msg-thinking"><span class="fab-thinking-dots"><span></span><span></span><span></span></span></p>';
+      exchange.appendChild(answerPlaceholder);
+      answerEl.appendChild(exchange);
+      pendingAnswerContainer = answerPlaceholder;
       box.classList.add('is-visible');
-      const wrap = document.getElementById('fab-wrap');
+      scrollToBottom();
+      var wrap = document.getElementById('fab-wrap');
       if (wrap) wrap.classList.add('is-thinking');
-      setTimeout(() => {
+      setTimeout(function () {
         if (wrap) wrap.classList.remove('is-thinking');
         fn();
       }, 400);
@@ -456,15 +505,93 @@
       return;
     }
 
-    if (q.includes('size in') || q.includes('size for')) {
-      const match = q.match(/size\s+(?:in|for)\s+(.+)/);
-      const brandName = match ? match[1].trim() : '';
+    var sizeOfCategoryMatch = q.match(/(?:what'?s?\s+my\s+|my\s+)(pants?|shirts?|jackets?|shoes?|sweaters?|dresses?|skirts?)\s+size/i);
+    if (sizeOfCategoryMatch) {
+      var categoryWordFromSize = sizeOfCategoryMatch[1].toLowerCase();
+      if (!typeCategoryStems[categoryWordFromSize] && typeCategoryStems[categoryWordFromSize + 's']) categoryWordFromSize = categoryWordFromSize + 's';
+      var stemsFromSize = typeCategoryStems[categoryWordFromSize];
+      if (stemsFromSize) {
+        showThinkingThen(function () {
+          var categoryItems = items.filter(i => {
+            var t = (i.itemType || '').toLowerCase();
+            return stemsFromSize.some(stem => t.includes(stem));
+          });
+          if (categoryItems.length === 0) {
+            showAnswer('<p class="fab-msg-a">You don\'t have any ' + categoryWordFromSize + ' in your wardrobe yet.</p>');
+            return;
+          }
+          var withSize = categoryItems.filter(i => (i.size || '').trim() !== '');
+          if (withSize.length === 0) {
+            showAnswer('<p class="fab-msg-a">You have ' + categoryWordFromSize + ' but no sizes saved for them yet.</p>');
+            return;
+          }
+          var sizes = [...new Set(withSize.map(i => (i.size || '').trim()))];
+          var brands = [...new Set(withSize.map(i => (i.brand || '').trim()).filter(Boolean))];
+          if (sizes.length === 1) {
+            var sizeVal = sizes[0];
+            var sizeLabel = (categoryWordFromSize === 'shoes' ? 'shoe size' : 'size');
+            if (brands.length === 1) {
+              showAnswer('<p class="fab-msg-a">Based on your item from ' + escapeHtml(brands[0]) + ', your ' + sizeLabel + ' is ' + escapeHtml(sizeVal) + '.</p>');
+            } else if (brands.length > 0) {
+              var brandList = brands.slice(0, -1).join(', ') + ' and ' + brands[brands.length - 1];
+              showAnswer('<p class="fab-msg-a">Based on the items from ' + escapeHtml(brandList) + ', your ' + sizeLabel + ' is ' + escapeHtml(sizeVal) + '.</p>');
+            } else {
+              showAnswer('<p class="fab-msg-a">Your ' + sizeLabel + ' is ' + escapeHtml(sizeVal) + '.</p>');
+            }
+          } else {
+            var parts = withSize.map(i => escapeHtml((i.size || '') + (i.brand ? ' in ' + i.brand : '')));
+            showAnswer('<p class="fab-msg-a">You have different sizes: ' + parts.join('; ') + '.</p>');
+          }
+        });
+        return;
+      }
+    }
+
+    if (q.includes('size in') || q.includes('size for') || q.includes('size of')) {
+      const match = q.match(/size\s+(?:in|for|of)\s+(.+?)(?:\?|\.|!)?$/i);
+      const word = match ? match[1].trim().replace(/\?|\.|!$/g, '').trim().toLowerCase() : '';
+      let categoryWord = word;
+      if (categoryWord && !typeCategoryStems[categoryWord] && typeCategoryStems[categoryWord + 's']) categoryWord = categoryWord + 's';
+      const stems = categoryWord && typeCategoryStems[categoryWord];
       showThinkingThen(() => {
-        const found = items.filter(i => (i.brand || '').toLowerCase().includes(brandName));
+        if (stems) {
+          var categoryItems = items.filter(i => {
+            const t = (i.itemType || '').toLowerCase();
+            return stems.some(stem => t.includes(stem));
+          });
+          if (categoryItems.length === 0) {
+            showAnswer('<p class="fab-msg-a">You don\'t have any ' + categoryWord + ' in your wardrobe yet.</p>');
+            return;
+          }
+          var withSize = categoryItems.filter(i => (i.size || '').trim() !== '');
+          if (withSize.length === 0) {
+            showAnswer('<p class="fab-msg-a">You have ' + categoryWord + ' but no sizes saved for them yet.</p>');
+            return;
+          }
+          var sizes = [...new Set(withSize.map(i => (i.size || '').trim()))];
+          var brands = [...new Set(withSize.map(i => (i.brand || '').trim()).filter(Boolean))];
+          if (sizes.length === 1) {
+            var sizeVal = sizes[0];
+            var sizeLabel = (categoryWord === 'shoes' ? 'shoe size' : 'size');
+            if (brands.length === 1) {
+              showAnswer('<p class="fab-msg-a">Based on your item from ' + escapeHtml(brands[0]) + ', your ' + sizeLabel + ' is ' + escapeHtml(sizeVal) + '.</p>');
+            } else if (brands.length > 0) {
+              var brandList = brands.length === 1 ? brands[0] : brands.slice(0, -1).join(', ') + ' and ' + brands[brands.length - 1];
+              showAnswer('<p class="fab-msg-a">Based on the items from ' + escapeHtml(brandList) + ', your ' + sizeLabel + ' is ' + escapeHtml(sizeVal) + '.</p>');
+            } else {
+              showAnswer('<p class="fab-msg-a">Your ' + sizeLabel + ' is ' + escapeHtml(sizeVal) + '.</p>');
+            }
+          } else {
+            var parts = withSize.map(i => escapeHtml((i.size || '') + (i.brand ? ' in ' + i.brand : '')));
+            showAnswer('<p class="fab-msg-a">You have different sizes: ' + parts.join('; ') + '.</p>');
+          }
+          return;
+        }
+        var found = items.filter(i => (i.brand || '').toLowerCase().includes(word));
         if (found.length === 0) showAnswer('<p class="fab-msg-a">No items from that brand.</p>');
         else {
-          const sizes = found.map(i => i.size).filter(Boolean);
-          const uniq = [...new Set(sizes)];
+          var sizesBrand = found.map(i => i.size).filter(Boolean);
+          var uniq = [...new Set(sizesBrand)];
           showAnswer('<p class="fab-msg-a">' + escapeHtml(uniq.join(', ')) + '</p>');
         }
       });
@@ -472,10 +599,10 @@
     }
 
     if (q.includes('do i have') && (q.includes('brand') || q.includes(q))) {
-      const rest = q.replace(/do i have\s+/, '').replace(/\s*brand\s*$/, '').trim();
-      const brandName = rest || q.replace(/do i have\s+/, '').trim();
+      const rest = q.replace(/do i have\s+/, '').replace(/\s*brand\s*$/, '').trim().replace(/\?|\.|!$/g, '');
+      const brandLower = (rest || q.replace(/do i have\s+/, '').trim().replace(/\?|\.|!$/g, '')).toLowerCase();
       showThinkingThen(() => {
-        const found = items.some(i => (i.brand || '').toLowerCase().includes(brandName));
+        const found = items.some(i => (i.brand || '').toLowerCase().includes(brandLower));
         showAnswer('<p class="fab-msg-a">' + (found ? 'Yes.' : 'No.') + '</p>');
       });
       return;
@@ -493,8 +620,29 @@
     }
 
     if (q.includes('how many')) {
+      const howManyMatch = q.match(/how\s+many\s+(\w+)/i);
+      let categoryWord = howManyMatch ? howManyMatch[1].trim().toLowerCase() : '';
+      if (categoryWord && !typeCategoryStems[categoryWord] && typeCategoryStems[categoryWord + 's']) categoryWord = categoryWord + 's';
+      const stems = categoryWord && typeCategoryStems[categoryWord];
       showThinkingThen(() => {
-        showAnswer('<p class="fab-msg-a">' + items.length + ' item' + (items.length === 1 ? '' : 's') + '.</p>');
+        if (!stems) {
+          showAnswer('<p class="fab-msg-a">You have ' + items.length + ' item' + (items.length === 1 ? '' : 's') + '.</p>');
+          return;
+        }
+        const found = items.filter(i => {
+          const t = (i.itemType || '').toLowerCase();
+          return stems.some(stem => t.includes(stem));
+        });
+        const n = found.length;
+        let label = categoryWord;
+        if (n === 1 && (categoryWord === 'pants' || categoryWord === 'shorts')) {
+          showAnswer('<p class="fab-msg-a">You have 1 pair of ' + categoryWord + '.</p>');
+        } else if (n === 1 && categoryWord.endsWith('s') && categoryWord !== 'pants' && categoryWord !== 'shorts') {
+          label = categoryWord.slice(0, -1);
+          showAnswer('<p class="fab-msg-a">You have 1 ' + label + '.</p>');
+        } else {
+          showAnswer('<p class="fab-msg-a">You have ' + n + ' ' + categoryWord + '.</p>');
+        }
       });
       return;
     }
@@ -538,7 +686,7 @@
       return;
     }
 
-    showAnswer('<p class="fab-msg-a">Try: "What brands?", "Size in Zara", "Do I have Nike?", "What pants?", "How many?", "What colors?", or "Show me my Zara pants".</p>');
+    showAnswer('<p class="fab-msg-a">Try: "What brands?", "Size in Zara", "What\'s my size of pants?", "Do I have Nike?", "What pants?", "How many?", "What colors?", or "Show me my Zara pants".</p>');
   }
 
   function renderItems() {
@@ -1022,7 +1170,12 @@
     document.getElementById('photo-preview-next').addEventListener('click', (e) => { e.stopPropagation(); goToNextPhotoPreview(); });
     window.addEventListener('resize', positionPhotoPreviewArrows);
 
-    document.getElementById('fab-answer-close').addEventListener('click', () => document.getElementById('fab-answer-box').classList.remove('is-visible'));
+    document.getElementById('fab-answer-close').addEventListener('click', function () {
+      var box = document.getElementById('fab-answer-box');
+      var content = document.getElementById('fab-answer-content');
+      if (content) content.innerHTML = '';
+      box.classList.remove('is-visible');
+    });
     const fabForm = document.getElementById('fab-form');
     const fabInput = document.getElementById('fab-input');
     fabForm.addEventListener('submit', (e) => {
