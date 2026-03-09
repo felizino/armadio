@@ -175,7 +175,15 @@
   }
 
   function saveItems(items) {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+    try {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(items));
+      return true;
+    } catch (e) {
+      if (e.name === 'QuotaExceededError' || e.code === 22) {
+        alert('Storage full. You can add more items without photos, or remove some existing photos to free space.');
+      }
+      return false;
+    }
   }
 
   function getBrandDomain(brand) {
@@ -209,6 +217,42 @@
     const div = document.createElement('div');
     div.textContent = s;
     return div.innerHTML;
+  }
+
+  /** Resize and compress image to JPEG data URL to reduce localStorage usage (typical 5MB limit). */
+  function compressImageForStorage(dataUrl, maxDimension, quality) {
+    if (!dataUrl || typeof dataUrl !== 'string' || !dataUrl.startsWith('data:image')) return Promise.resolve(dataUrl);
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      img.onload = function () {
+        var w = img.naturalWidth;
+        var h = img.naturalHeight;
+        var tw = w;
+        var th = h;
+        if (w > maxDimension || h > maxDimension) {
+          if (w >= h) {
+            tw = maxDimension;
+            th = Math.round(h * maxDimension / w);
+          } else {
+            th = maxDimension;
+            tw = Math.round(w * maxDimension / h);
+          }
+        }
+        var canvas = document.createElement('canvas');
+        canvas.width = tw;
+        canvas.height = th;
+        var ctx = canvas.getContext('2d');
+        if (!ctx) { resolve(dataUrl); return; }
+        ctx.drawImage(img, 0, 0, tw, th);
+        try {
+          resolve(canvas.toDataURL('image/jpeg', quality));
+        } catch (e) {
+          reject(e);
+        }
+      };
+      img.onerror = function () { reject(new Error('Image load failed')); };
+      img.src = dataUrl;
+    });
   }
 
   function getProfileDisplayName() {
@@ -965,21 +1009,24 @@
     const form = document.getElementById('add-item-form');
     if (!form) return;
 
-    form.addEventListener('submit', (e) => {
+    form.addEventListener('submit', function (e) {
       e.preventDefault();
-      const fd = new FormData(form);
-      const item = {
+      var fd = new FormData(form);
+      var item = {
         itemType: (fd.get('itemType') || '').trim(),
         brand: (fd.get('brand') || '').trim(),
         size: (fd.get('size') || '').trim(),
         color: (fd.get('color') || '').trim(),
         photo: addFormPhotoDataUrl
       };
-      const items = getItems();
+      var items = getItems();
       items.push(item);
-      saveItems(items);
-      closeAddModal();
-      renderItems();
+      if (!saveItems(items)) {
+        items.pop();
+      } else {
+        closeAddModal();
+        renderItems();
+      }
     });
   }
 
@@ -1016,8 +1063,15 @@
 
     function handleAddFormPhotoFile(file) {
       if (!file || !file.type.startsWith('image/')) return;
-      const reader = new FileReader();
-      reader.onload = function () { setAddFormPhoto(reader.result); };
+      var reader = new FileReader();
+      reader.onload = function () {
+        var raw = reader.result;
+        compressImageForStorage(raw, 800, 0.82).then(function (dataUrl) {
+          setAddFormPhoto(dataUrl);
+        }).catch(function () {
+          setAddFormPhoto(raw);
+        });
+      };
       reader.readAsDataURL(file);
     }
 
@@ -1048,8 +1102,18 @@
   }
 
   function init() {
-    const addBackdrop = document.getElementById('add-modal-backdrop');
-    const addClose = document.getElementById('add-modal-close');
+    var vv = window.visualViewport;
+    function setViewportHeight() {
+      document.documentElement.style.setProperty('--viewport-height', (vv ? vv.height : window.innerHeight) + 'px');
+    }
+    if (vv) {
+      setViewportHeight();
+      vv.addEventListener('resize', setViewportHeight);
+      vv.addEventListener('scroll', setViewportHeight);
+    }
+
+    var addBackdrop = document.getElementById('add-modal-backdrop');
+    var addClose = document.getElementById('add-modal-close');
     if (addBackdrop) {
       addBackdrop.addEventListener('click', (e) => {
         if (e.target !== addBackdrop) return;
@@ -1065,6 +1129,16 @@
       if (form) form.reset();
       setAddFormPhoto(null);
       document.getElementById('add-modal-backdrop').classList.add('is-open');
+    }
+    var addModalEl = document.getElementById('add-modal');
+    if (addModalEl) {
+      addModalEl.addEventListener('focusin', function (e) {
+        if (e.target && (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA')) {
+          setTimeout(function () {
+            e.target.scrollIntoView({ behavior: 'smooth', block: 'center' });
+          }, 400);
+        }
+      });
     }
     document.getElementById('add-manually-card').addEventListener('click', openAddModal);
     document.getElementById('add-manually-card').addEventListener('keydown', (e) => {
@@ -1142,19 +1216,38 @@
     const photoDrop = document.getElementById('photo-drop-zone');
     function applyPhoto(file) {
       if (!file || !file.type.startsWith('image/')) return;
-      const reader = new FileReader();
-      reader.onload = () => {
-        const dataUrl = reader.result;
-        if (pendingPhotoIndex != null) {
-          const items = getItems();
-          if (pendingPhotoIndex >= 0 && pendingPhotoIndex < items.length) {
-            items[pendingPhotoIndex].photo = dataUrl;
-            saveItems(items);
-            renderItems();
+      var reader = new FileReader();
+      reader.onload = function () {
+        var raw = reader.result;
+        compressImageForStorage(raw, 800, 0.82).then(function (dataUrl) {
+          if (pendingPhotoIndex != null) {
+            var items = getItems();
+            if (pendingPhotoIndex >= 0 && pendingPhotoIndex < items.length) {
+              var prev = items[pendingPhotoIndex].photo;
+              items[pendingPhotoIndex].photo = dataUrl;
+              if (!saveItems(items)) {
+                items[pendingPhotoIndex].photo = prev;
+              }
+              renderItems();
+            }
           }
-        }
-        photoBackdrop.classList.remove('is-open');
-        pendingPhotoIndex = null;
+          photoBackdrop.classList.remove('is-open');
+          pendingPhotoIndex = null;
+        }).catch(function () {
+          if (pendingPhotoIndex != null) {
+            var items = getItems();
+            if (pendingPhotoIndex >= 0 && pendingPhotoIndex < items.length) {
+              var prev = items[pendingPhotoIndex].photo;
+              items[pendingPhotoIndex].photo = raw;
+              if (!saveItems(items)) {
+                items[pendingPhotoIndex].photo = prev;
+              }
+              renderItems();
+            }
+          }
+          photoBackdrop.classList.remove('is-open');
+          pendingPhotoIndex = null;
+        });
       };
       reader.readAsDataURL(file);
     }

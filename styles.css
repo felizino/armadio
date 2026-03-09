@@ -8,6 +8,7 @@
   --border: #e5e5e5;
   --nav-bg: #fff;
   --shadow: rgba(0, 0, 0, 0.08);
+  --viewport-height: 100vh;
 }
 
 [data-theme="dark"] {
@@ -1603,6 +1604,26 @@ a:hover {
   max-width: 16em;
 }
 
+.photo-drop-text--mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .photo-drop-text--desktop {
+    display: none;
+  }
+  .photo-drop-text--mobile {
+    display: block;
+  }
+  .photo-drop-zone {
+    min-height: 200px;
+    padding: 2rem 1.5rem;
+  }
+  #photo-modal.modal {
+    max-width: none;
+  }
+}
+
 /* Photo preview modal (full-size image + details overlay) */
 .photo-preview-modal {
   position: relative;
@@ -2055,8 +2076,10 @@ a:hover {
   }
 
   #add-modal.modal {
-    max-height: 90vh;
+    max-height: calc(var(--viewport-height, 100vh) - 2rem);
     overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
   }
 
   .modal-close {
