@@ -299,13 +299,57 @@
     else vibePhrase = 'curated and personal—each piece has its place.';
 
     const mid = colorPhrase + (brandPhrase ? ', ' + brandPhrase : '') + '—' + vibePhrase;
-    const text = namePart + 'your style is ' + mid;
+    const text = namePart + 'Your style is ' + mid;
     return text.replace(/\s+/g, ' ').trim();
   }
 
   function updateStyleSummary() {
     const el = document.getElementById('style-summary');
     if (el) el.textContent = getStyleSummary(getItems());
+  }
+
+  const FIT_STORAGE_KEY = 'armadio-fit';
+  const FIT_UNIT_KEY = 'armadio-fit-unit';
+  const FIT_KEYS = ['head', 'neck', 'chest', 'waist', 'hip', 'wrist', 'thigh', 'knee', 'ankle'];
+  /** Likely male measurement ranges (circumference in cm) for dropdowns. */
+  const FIT_RANGES = {
+    head: { min: 54, max: 62, step: 0.5 },
+    neck: { min: 35, max: 45, step: 0.5 },
+    chest: { min: 85, max: 120, step: 1 },
+    waist: { min: 70, max: 110, step: 1 },
+    hip: { min: 85, max: 115, step: 1 },
+    wrist: { min: 15, max: 21, step: 0.5 },
+    thigh: { min: 50, max: 70, step: 1 },
+    knee: { min: 35, max: 45, step: 0.5 },
+    ankle: { min: 22, max: 28, step: 0.5 }
+  };
+
+  function getFit() {
+    try {
+      var raw = localStorage.getItem(FIT_STORAGE_KEY);
+      if (!raw) return {};
+      var parsed = JSON.parse(raw);
+      return typeof parsed === 'object' && parsed !== null ? parsed : {};
+    } catch (_) { return {}; }
+  }
+
+  function saveFit(data) {
+    try {
+      localStorage.setItem(FIT_STORAGE_KEY, JSON.stringify(data));
+    } catch (_) {}
+  }
+
+  function getFitUnit() {
+    try {
+      var u = localStorage.getItem(FIT_UNIT_KEY);
+      return u === 'in' ? 'in' : 'cm';
+    } catch (_) { return 'cm'; }
+  }
+
+  function setFitUnit(unit) {
+    try {
+      localStorage.setItem(FIT_UNIT_KEY, unit === 'in' ? 'in' : 'cm');
+    } catch (_) {}
   }
 
   let pendingDeleteIndex = null;
@@ -549,6 +593,14 @@
       return;
     }
 
+    if ((q.includes('my style') || (q.includes('what') && q.includes('style'))) && !q.includes('size')) {
+      showThinkingThen(function () {
+        var summary = getStyleSummary(items);
+        showAnswer('<p class="fab-msg-a">' + escapeHtml(summary) + '</p>');
+      });
+      return;
+    }
+
     var sizeOfCategoryMatch = q.match(/(?:what'?s?\s+my\s+|my\s+)(pants?|shirts?|jackets?|shoes?|sweaters?|dresses?|skirts?)\s+size/i);
     if (sizeOfCategoryMatch) {
       var categoryWordFromSize = sizeOfCategoryMatch[1].toLowerCase();
@@ -730,7 +782,7 @@
       return;
     }
 
-    showAnswer('<p class="fab-msg-a">Try: "What brands?", "Size in Zara", "What\'s my size of pants?", "Do I have Nike?", "What pants?", "How many?", "What colors?", or "Show me my Zara pants".</p>');
+    showAnswer('<p class="fab-msg-a">Try: "What\'s my style?", "What brands?", "Size in Zara", "What\'s my size of pants?", "Do I have Nike?", "What pants?", "How many?", "What colors?", or "Show me my Zara pants".</p>');
   }
 
   function renderItems() {
@@ -1290,7 +1342,83 @@
 
     initAddForm();
     initAddFormPhoto();
+    initFitSection();
     renderItems();
+  }
+
+  function fillFitSelect(el, key, unit) {
+    if (!el) return;
+    var range = FIT_RANGES[key];
+    if (!range) return;
+    el.innerHTML = '';
+    var optEmpty = document.createElement('option');
+    optEmpty.value = '';
+    optEmpty.textContent = '—';
+    el.appendChild(optEmpty);
+    var steps = Math.round((range.max - range.min) / range.step) + 1;
+    for (var i = 0; i < steps; i++) {
+      var v = range.min + i * range.step;
+      v = Math.round(v * 10) / 10;
+      var opt = document.createElement('option');
+      opt.value = String(v);
+      opt.textContent = unit === 'in' ? (v / 2.54).toFixed(1) + ' in' : (range.step >= 1 ? Math.round(v) : v) + ' cm';
+      el.appendChild(opt);
+    }
+    var data = getFit();
+    var val = data[key];
+    el.value = val !== undefined && val !== null && val !== '' ? String(val) : '';
+  }
+
+  function updateFitUnitDesc(unit) {
+    var desc = document.getElementById('fit-section-desc');
+    if (desc) desc.textContent = 'Body measurements for sizing and shopping.';
+  }
+
+  function initFitSection() {
+    var unit = getFitUnit();
+    updateFitUnitDesc(unit);
+
+    var toggleWrap = document.querySelector('.fit-unit-toggle');
+    if (toggleWrap) {
+      toggleWrap.querySelectorAll('.fit-unit-btn').forEach(function (btn) {
+        var u = btn.getAttribute('data-unit');
+        btn.classList.toggle('is-active', u === unit);
+        btn.setAttribute('aria-pressed', u === unit ? 'true' : 'false');
+        btn.addEventListener('click', function () {
+          if (u === unit) return;
+          unit = u;
+          setFitUnit(unit);
+          toggleWrap.querySelectorAll('.fit-unit-btn').forEach(function (b) {
+            var ub = b.getAttribute('data-unit');
+            b.classList.toggle('is-active', ub === unit);
+            b.setAttribute('aria-pressed', ub === unit ? 'true' : 'false');
+          });
+          updateFitUnitDesc(unit);
+          FIT_KEYS.forEach(function (key) {
+            fillFitSelect(document.getElementById('fit-' + key), key, unit);
+          });
+        });
+      });
+    }
+
+    FIT_KEYS.forEach(function (key) {
+      var el = document.getElementById('fit-' + key);
+      if (!el) return;
+      fillFitSelect(el, key, unit);
+      if (el._fitListener) return;
+      el._fitListener = true;
+      el.addEventListener('change', function () {
+        var next = getFit();
+        var raw = el.value;
+        if (raw === '') {
+          delete next[key];
+        } else {
+          var num = parseFloat(raw);
+          if (!isNaN(num)) next[key] = num;
+        }
+        saveFit(next);
+      });
+    });
   }
 
   if (document.readyState === 'loading') {
