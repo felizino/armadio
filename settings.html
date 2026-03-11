@@ -23,6 +23,63 @@
         <label for="profile-last-name">Last name</label>
         <input type="text" id="profile-last-name" class="setting-input" placeholder="Last name" autocomplete="family-name">
       </div>
+      <div class="setting-row">
+        <label for="profile-gender">Gender</label>
+        <select id="profile-gender" class="setting-input setting-select" aria-label="Gender">
+          <option value="">—</option>
+          <option value="man">Man</option>
+          <option value="woman">Woman</option>
+          <option value="fluid">Fluid</option>
+        </select>
+      </div>
+    </section>
+    <section class="fit-section settings-section" aria-labelledby="fit-heading">
+      <div class="fit-section-header">
+        <h2 class="section-label" id="fit-heading">Your fit</h2>
+        <div class="fit-unit-toggle" role="group" aria-label="Measurement unit">
+          <button type="button" class="fit-unit-btn" data-unit="cm" aria-pressed="true">cm</button>
+          <button type="button" class="fit-unit-btn" data-unit="in" aria-pressed="false">in</button>
+        </div>
+      </div>
+      <p class="fit-section-desc hero-tagline" id="fit-section-desc">Body measurements for sizing and shopping.</p>
+      <div class="fit-measurements" id="fit-measurements">
+        <div class="fit-field">
+          <label for="fit-head">Head</label>
+          <select id="fit-head" class="fit-select" aria-label="Head circumference cm"></select>
+        </div>
+        <div class="fit-field">
+          <label for="fit-neck">Neck</label>
+          <select id="fit-neck" class="fit-select" aria-label="Neck circumference cm"></select>
+        </div>
+        <div class="fit-field">
+          <label for="fit-chest">Chest</label>
+          <select id="fit-chest" class="fit-select" aria-label="Chest circumference cm"></select>
+        </div>
+        <div class="fit-field">
+          <label for="fit-waist">Waist</label>
+          <select id="fit-waist" class="fit-select" aria-label="Waist circumference cm"></select>
+        </div>
+        <div class="fit-field">
+          <label for="fit-hip">Hip</label>
+          <select id="fit-hip" class="fit-select" aria-label="Hip circumference cm"></select>
+        </div>
+        <div class="fit-field">
+          <label for="fit-wrist">Wrist</label>
+          <select id="fit-wrist" class="fit-select" aria-label="Wrist circumference cm"></select>
+        </div>
+        <div class="fit-field">
+          <label for="fit-thigh">Thigh</label>
+          <select id="fit-thigh" class="fit-select" aria-label="Thigh circumference cm"></select>
+        </div>
+        <div class="fit-field">
+          <label for="fit-knee">Knee</label>
+          <select id="fit-knee" class="fit-select" aria-label="Knee circumference cm"></select>
+        </div>
+        <div class="fit-field">
+          <label for="fit-ankle">Ankle</label>
+          <select id="fit-ankle" class="fit-select" aria-label="Ankle circumference cm"></select>
+        </div>
+      </div>
     </section>
     <section class="settings-section">
       <h2 class="section-label">Appearance</h2>

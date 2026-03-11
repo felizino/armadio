@@ -14,13 +14,6 @@
     skirts: ['skirt']
   };
 
-  const suggestionData = {
-    itemType: ['Shirt', 'T-Shirt', 'Pants', 'Jeans', 'Jacket', 'Coat', 'Sweater', 'Dress', 'Skirt', 'Shorts', 'Sneakers', 'Boots', 'Loafers', 'Blazer', 'Hoodie', 'Cardigan', 'Vest', 'Polo', 'Jumper'],
-    brand: ['Theory', 'Zara', 'Nike', 'Adidas', 'Uniqlo', "Levi's", 'H&M', 'COS', 'Everlane', 'Reformation', 'Allbirds', 'Common Projects', 'J.Crew', 'Madewell', 'Patagonia', 'The North Face', 'Gucci', 'Prada', 'Saint Laurent', 'Acne Studios'],
-    size: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '32', '34', '36', '38', '40', '42', '44', '8', '9', '10', '11', '12', 'One Size'],
-    color: ['Black', 'White', 'Navy', 'Grey', 'Gray', 'Charcoal', 'Beige', 'Cream', 'Brown', 'Tan', 'Burgundy', 'Red', 'Blue', 'Green', 'Olive', 'Pink', 'Yellow', 'Orange', 'Purple', 'Denim', 'Khaki', 'Camel', 'Ivory', 'Off-White']
-  };
-
   const brandToDomain = {
     'Acne Studios': 'acnestudios.com',
     'Adidas': 'adidas.com',
@@ -133,34 +126,86 @@
     'Zara': 'zara.com',
     'Zimmermann': 'zimmermannwear.com',
     'Allbirds': 'allbirds.com',
-    'Common Projects': 'commonprojects.com'
+    'Common Projects': 'commonprojects.com',
+    'Alexander McQueen': 'www.alexandermcqueen.com',
+    'Amiri': 'amiri.com',
+    'Balmain': 'balmain.com',
+    'Berluti': 'berluti.com',
+    'Boglioli': 'boglioli.com',
+    'Canali': 'canali.com',
+    'Chopard': 'chopard.com',
+    'Dunhill': 'dunhill.com',
+    'Emporio Armani': 'armani.com',
+    'Ermenegildo Zegna': 'zegna.com',
+    'Giorgio Armani': 'armani.com',
+    'Grenson': 'grenson.com',
+    'Hugo Boss': 'hugoboss.com',
+    'Loro Piana': 'loropiana.com',
+    'Mulberry': 'mulberry.com',
+    'Neil Barrett': 'neilbarrett.com',
+    'Officine Générale': 'officinegenerale.com',
+    'Oliver Spencer': 'oliverspencer.com',
+    'Polo Ralph Lauren': 'ralphlauren.com',
+    'Ralph Lauren': 'ralphlauren.com',
+    'Sergio Rossi': 'sergiorossi.com',
+    'Sunspel': 'sunspel.com',
+    'Tumi': 'tumi.com',
+    'Y-3': 'y-3.com',
+    'Barbour': 'barbour.com',
+    'Birkenstock': 'birkenstock.com',
+    'Clarks': 'clarks.com',
+    'Cole Haan': 'colehaan.com',
+    'Ecco': 'ecco.com',
+    'Free People': 'freepeople.com',
+    'Hunter': 'hunterboots.com',
+    'Kate Spade': 'katespade.com',
+    'Longchamp': 'longchamp.com',
+    'Michael Kors': 'michaelkors.com',
+    'Sam Edelman': 'samedelman.com',
+    'Steve Madden': 'stevemadden.com',
+    'Ted Baker': 'tedbaker.com',
+    'UGG': 'ugg.com',
+    'Veja': 'veja.com',
+    'Wolverine': 'wolverine.com'
+  };
+
+  const suggestionData = {
+    itemType: ['Shirt', 'T-Shirt', 'Pants', 'Jeans', 'Jacket', 'Coat', 'Sweater', 'Dress', 'Skirt', 'Shorts', 'Sneakers', 'Boots', 'Loafers', 'Blazer', 'Hoodie', 'Cardigan', 'Vest', 'Polo', 'Jumper'],
+    brand: Object.keys(brandToDomain).sort(),
+    size: ['XS', 'S', 'M', 'L', 'XL', 'XXL', '32', '34', '36', '38', '40', '42', '44', '8', '9', '10', '11', '12', 'One Size'],
+    color: ['Animal print', 'Black', 'Blue', 'Brown', 'Burgundy', 'Gold', 'Gray', 'Green', 'Multi', 'Neutrals', 'Orange', 'Pink', 'Purple', 'Red', 'Silver', 'White', 'Off-white', 'Yellow']
   };
 
   const colorToHex = {
+    'animal print': '#8b6914',
     black: '#1a1a1a',
-    white: '#fafafa',
-    navy: '#1e3a5f',
-    grey: '#6b7280',
+    blue: '#2563eb',
+    brown: '#5c4033',
+    burgundy: '#800020',
+    gold: '#b8860b',
     gray: '#6b7280',
+    grey: '#6b7280',
+    green: '#15803d',
+    multi: '#9c27b0',
+    neutrals: '#d4b896',
+    orange: '#ea580c',
+    pink: '#db2777',
+    purple: '#7c3aed',
+    red: '#b91c1c',
+    silver: '#c0c0c0',
+    white: '#fafafa',
+    'off-white': '#e8e4d9',
+    yellow: '#ca8a04',
+    navy: '#1e3a5f',
     charcoal: '#36454f',
     beige: '#d4b896',
     cream: '#fffdd0',
-    brown: '#5c4033',
     tan: '#d2b48c',
-    burgundy: '#800020',
-    red: '#b91c1c',
-    blue: '#2563eb',
-    green: '#15803d',
     olive: '#6b8e23',
-    pink: '#db2777',
-    yellow: '#ca8a04',
-    orange: '#ea580c',
-    purple: '#7c3aed',
     denim: '#1560bd',
     khaki: '#c3b091',
     camel: '#c19a6b',
-    ivory: '#fffff0',
-    'off-white': '#f5f5dc'
+    ivory: '#fffff0'
   };
 
   function getItems() {
@@ -207,8 +252,8 @@
 
   function getColorHex(colorName) {
     if (!colorName || typeof colorName !== 'string') return '#888';
-    const key = colorName.trim().toLowerCase().replace(/\s+/g, ' ');
-    return colorToHex[key] || '#888';
+    var first = colorName.split(',')[0].trim().toLowerCase().replace(/\s+/g, ' ');
+    return colorToHex[first] || '#888';
   }
 
   function escapeHtml(str) {
@@ -840,11 +885,17 @@
         const ellipsisSvg = '<svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><circle cx="12" cy="6" r="1.5"/><circle cx="12" cy="12" r="1.5"/><circle cx="12" cy="18" r="1.5"/></svg>';
         gridEl.innerHTML = items.map((item, index) => {
           const logoUrl = getBrandLogoUrl(item.brand);
+          const initials = getBrandInitials(item.brand);
           const avatarHtml = logoUrl
-            ? '<div class="items-grid-card-avatar"><img src="' + escapeHtml(logoUrl) + '" alt=""></div>'
-            : '<div class="items-grid-card-avatar"><span class="items-grid-card-avatar-initials">' + escapeHtml(getBrandInitials(item.brand)) + '</span></div>';
+            ? '<div class="items-grid-card-avatar" data-initials="' + escapeHtml(initials) + '"><img src="' + escapeHtml(logoUrl) + '" alt=""></div>'
+            : '<div class="items-grid-card-avatar"><span class="items-grid-card-avatar-initials">' + escapeHtml(initials) + '</span></div>';
           const line1 = escapeHtml((item.brand || '') + (item.brand && item.itemType ? ' · ' : '') + (item.itemType || ''));
-          const line2 = escapeHtml([item.color, item.size].filter(Boolean).join(' · '));
+          const line2Text = escapeHtml([item.color, item.size].filter(Boolean).join(' · '));
+          const gridColorParts = item.color ? item.color.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
+          const gridSwatchHtml = gridColorParts.length ? gridColorParts.slice(0, 3).map(function (c) {
+            return '<span class="item-color-swatch items-grid-card-swatch" style="background:' + escapeHtml(getColorHex(c)) + '" title="' + escapeHtml(c) + '"></span>';
+          }).join('') : '';
+          const line2 = gridSwatchHtml + '<span class="items-grid-card-line2-text">' + line2Text + '</span>';
           const photoContent = item.photo
             ? '<img src="' + escapeHtml(item.photo) + '" alt="">'
             : '<div class="items-grid-card-photo-placeholder">' + photoPlaceholderSvg + '</div>';
@@ -929,12 +980,15 @@
         ? '<div class="item-photo" data-index="' + index + '" role="button" tabindex="0"><span class="item-photo-crop"><img src="' + escapeHtml(item.photo) + '" alt=""></span></div>'
         : '<button type="button" class="item-photo item-photo--placeholder" data-index="' + index + '" data-tooltip="Add photo" aria-label="Add photo"><span class="item-photo-placeholder-icon" aria-hidden="true"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="12" cy="12" r="4"/><path d="M16 8l2-2"/></svg></span></button>';
       const logoUrl = getBrandLogoUrl(item.brand);
+      const initials = getBrandInitials(item.brand);
       const avatarHtml = logoUrl
-        ? '<div class="item-avatar"><img src="' + escapeHtml(logoUrl) + '" alt=""></div>'
-        : '<div class="item-avatar item-avatar--initials"><span class="item-avatar-initials">' + escapeHtml(getBrandInitials(item.brand)) + '</span></div>';
-      const hex = getColorHex(item.color);
+        ? '<div class="item-avatar" data-initials="' + escapeHtml(initials) + '"><img src="' + escapeHtml(logoUrl) + '" alt=""></div>'
+        : '<div class="item-avatar item-avatar--initials"><span class="item-avatar-initials">' + escapeHtml(initials) + '</span></div>';
+      var colorParts = item.color ? item.color.split(',').map(function (s) { return s.trim(); }).filter(Boolean) : [];
+      var swatch = colorParts.length ? colorParts.slice(0, 3).map(function (c) {
+        return '<span class="item-color-swatch" style="background:' + escapeHtml(getColorHex(c)) + '" title="' + escapeHtml(c) + '"></span>';
+      }).join('') + ' ' : '';
       const meta = escapeHtml([item.color, item.size].filter(Boolean).join(' · '));
-      const swatch = item.color ? '<span class="item-color-swatch" style="background:' + escapeHtml(hex) + '"></span> ' : '';
       const vtName = items.length >= 3 ? ' style="view-transition-name: item-' + index + '"' : '';
       return '<li data-index="' + index + '" draggable="false"' + vtName + '>' +
         photoHtml +
@@ -987,6 +1041,83 @@
     const val = (input.value || '').trim().toLowerCase();
     if (!val) return list.slice(0, 12);
     return list.filter(s => String(s).toLowerCase().includes(val)).slice(0, 12);
+  }
+
+  function getSelectedColors(input) {
+    var raw = (input.value || '').trim();
+    if (!raw) return [];
+    return raw.split(',').map(function (s) { return s.trim(); }).filter(Boolean);
+  }
+
+  function setSelectedColors(input, arr) {
+    input.value = arr.join(', ');
+    input.dispatchEvent(new Event('input', { bubbles: true }));
+  }
+
+  function initColorPicker(input, listId) {
+    var listEl = document.getElementById(listId);
+    if (!listEl || !input) return;
+    listEl.classList.add('is-color-picker');
+
+    function renderSwatches() {
+      var selected = getSelectedColors(input);
+      var selectedLower = selected.map(function (s) { return s.toLowerCase(); });
+      var swatchHtml = suggestionData.color.map(function (name) {
+        var hex = getColorHex(name);
+        var isSelected = selectedLower.indexOf(name.toLowerCase()) >= 0;
+        var selectedClass = isSelected ? ' is-selected' : '';
+        var checkmark = isSelected ? '<span class="color-swatch-check" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M2 6l3 3 5-6"/></svg></span>' : '';
+        return '<li><button type="button" class="color-swatch' + selectedClass + '" style="background:' + escapeHtml(hex) + '" data-value="' + escapeHtml(name) + '" data-tooltip="' + escapeHtml(name) + '" title="' + escapeHtml(name) + '" aria-label="' + escapeHtml(name) + '" role="option">' + checkmark + '</button></li>';
+      }).join('');
+      var doneHtml = '<li class="color-picker-done-wrap"><button type="button" class="color-picker-done-btn">Done</button></li>';
+      listEl.innerHTML = swatchHtml + doneHtml;
+
+      listEl.querySelectorAll('.color-swatch').forEach(function (btn) {
+        btn.addEventListener('mousedown', function (e) {
+          e.preventDefault();
+          var val = btn.getAttribute('data-value');
+          var sel = getSelectedColors(input);
+          var idx = sel.map(function (s) { return s.toLowerCase(); }).indexOf(val.toLowerCase());
+          if (idx >= 0) {
+            sel.splice(idx, 1);
+          } else {
+            sel.push(val);
+          }
+          setSelectedColors(input, sel);
+          renderSwatches();
+        });
+      });
+      var doneBtn = listEl.querySelector('.color-picker-done-btn');
+      if (doneBtn) {
+        doneBtn.addEventListener('click', function (e) {
+          e.stopPropagation();
+          hideList();
+        });
+      }
+    }
+
+    function showList() {
+      renderSwatches();
+      listEl.classList.remove('open-upward');
+      var pickerHeight = 220;
+      var inputRect = input.getBoundingClientRect();
+      if (inputRect.bottom + pickerHeight + 8 > (window.innerHeight || document.documentElement.clientHeight)) {
+        listEl.classList.add('open-upward');
+      }
+      listEl.classList.add('is-open');
+      listEl.setAttribute('aria-expanded', 'true');
+    }
+
+    function hideList() {
+      listEl.classList.remove('is-open', 'open-upward');
+      listEl.setAttribute('aria-expanded', 'false');
+    }
+
+    input.addEventListener('focus', showList);
+    input.addEventListener('blur', function () { setTimeout(hideList, 150); });
+    input.addEventListener('input', function () {
+      if (listEl.classList.contains('is-open')) renderSwatches();
+    });
   }
 
   function initAutocompleteForInput(input, listId) {
@@ -1089,28 +1220,23 @@
     const imgEl = document.getElementById('add-item-photo-preview-img');
     const removeBtn = document.getElementById('add-item-photo-remove');
     const fileInput = document.getElementById('add-item-photo-file');
-    const cameraInput = document.getElementById('add-item-photo-camera');
     if (dataUrl) {
       if (emptyEl) emptyEl.hidden = true;
       if (previewEl) { previewEl.hidden = false; if (imgEl) imgEl.src = dataUrl; }
       if (removeBtn) removeBtn.hidden = false;
       if (fileInput) fileInput.value = '';
-      if (cameraInput) cameraInput.value = '';
     } else {
       if (emptyEl) emptyEl.hidden = false;
       if (previewEl) previewEl.hidden = true;
       if (removeBtn) removeBtn.hidden = true;
       if (imgEl) imgEl.src = '';
       if (fileInput) fileInput.value = '';
-      if (cameraInput) cameraInput.value = '';
     }
   }
 
   function initAddFormPhoto() {
     const dropEl = document.getElementById('add-item-photo-drop');
     const fileInput = document.getElementById('add-item-photo-file');
-    const cameraInput = document.getElementById('add-item-photo-camera');
-    const cameraBtn = document.getElementById('add-item-photo-camera-btn');
     const removeBtn = document.getElementById('add-item-photo-remove');
 
     function handleAddFormPhotoFile(file) {
@@ -1127,9 +1253,7 @@
       reader.readAsDataURL(file);
     }
 
-    if (cameraBtn && cameraInput) cameraBtn.addEventListener('click', function () { cameraInput.click(); });
     if (fileInput) fileInput.addEventListener('change', function () { if (fileInput.files && fileInput.files[0]) handleAddFormPhotoFile(fileInput.files[0]); });
-    if (cameraInput) cameraInput.addEventListener('change', function () { if (cameraInput.files && cameraInput.files[0]) handleAddFormPhotoFile(cameraInput.files[0]); });
     if (removeBtn) removeBtn.addEventListener('click', function () { setAddFormPhoto(null); });
 
     if (dropEl) {
@@ -1334,15 +1458,28 @@
     initAutocompleteForInput(document.getElementById('field-item-type'), 'autocomplete-list');
     initAutocompleteForInput(document.getElementById('field-brand'), 'autocomplete-list-brand');
     initAutocompleteForInput(document.getElementById('field-size'), 'autocomplete-list-size');
-    initAutocompleteForInput(document.getElementById('field-color'), 'autocomplete-list-color');
+    initColorPicker(document.getElementById('field-color'), 'autocomplete-list-color');
     initAutocompleteForInput(document.getElementById('edit-field-item-type'), 'autocomplete-list-edit-itemType');
     initAutocompleteForInput(document.getElementById('edit-field-brand'), 'autocomplete-list-edit-brand');
     initAutocompleteForInput(document.getElementById('edit-field-size'), 'autocomplete-list-edit-size');
-    initAutocompleteForInput(document.getElementById('edit-field-color'), 'autocomplete-list-edit-color');
+    initColorPicker(document.getElementById('edit-field-color'), 'autocomplete-list-edit-color');
+
+    document.addEventListener('error', function (e) {
+      if (e.target && e.target.tagName === 'IMG') {
+        var avatar = e.target.closest('.item-avatar');
+        if (avatar && avatar.dataset.initials) {
+          avatar.classList.add('item-avatar--initials');
+          avatar.innerHTML = '<span class="item-avatar-initials">' + escapeHtml(avatar.dataset.initials) + '</span>';
+        }
+        var gridAvatar = e.target.closest('.items-grid-card-avatar');
+        if (gridAvatar && gridAvatar.dataset.initials) {
+          gridAvatar.innerHTML = '<span class="items-grid-card-avatar-initials">' + escapeHtml(gridAvatar.dataset.initials) + '</span>';
+        }
+      }
+    }, true);
 
     initAddForm();
     initAddFormPhoto();
-    initFitSection();
     renderItems();
   }
 

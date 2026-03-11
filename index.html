@@ -66,55 +66,6 @@
       <p class="style-summary hero-tagline" id="style-summary">Add items to learn about your style.</p>
     </section>
 
-    <section class="fit-section" aria-labelledby="fit-heading">
-      <div class="fit-section-header">
-        <h2 class="section-label" id="fit-heading">Your fit</h2>
-        <div class="fit-unit-toggle" role="group" aria-label="Measurement unit">
-          <button type="button" class="fit-unit-btn" data-unit="cm" aria-pressed="true">cm</button>
-          <button type="button" class="fit-unit-btn" data-unit="in" aria-pressed="false">in</button>
-        </div>
-      </div>
-      <p class="fit-section-desc hero-tagline" id="fit-section-desc">Body measurements for sizing and shopping.</p>
-      <div class="fit-measurements" id="fit-measurements">
-        <div class="fit-field">
-          <label for="fit-head">Head</label>
-          <select id="fit-head" class="fit-select" aria-label="Head circumference cm"></select>
-        </div>
-        <div class="fit-field">
-          <label for="fit-neck">Neck</label>
-          <select id="fit-neck" class="fit-select" aria-label="Neck circumference cm"></select>
-        </div>
-        <div class="fit-field">
-          <label for="fit-chest">Chest</label>
-          <select id="fit-chest" class="fit-select" aria-label="Chest circumference cm"></select>
-        </div>
-        <div class="fit-field">
-          <label for="fit-waist">Waist</label>
-          <select id="fit-waist" class="fit-select" aria-label="Waist circumference cm"></select>
-        </div>
-        <div class="fit-field">
-          <label for="fit-hip">Hip</label>
-          <select id="fit-hip" class="fit-select" aria-label="Hip circumference cm"></select>
-        </div>
-        <div class="fit-field">
-          <label for="fit-wrist">Wrist</label>
-          <select id="fit-wrist" class="fit-select" aria-label="Wrist circumference cm"></select>
-        </div>
-        <div class="fit-field">
-          <label for="fit-thigh">Thigh</label>
-          <select id="fit-thigh" class="fit-select" aria-label="Thigh circumference cm"></select>
-        </div>
-        <div class="fit-field">
-          <label for="fit-knee">Knee</label>
-          <select id="fit-knee" class="fit-select" aria-label="Knee circumference cm"></select>
-        </div>
-        <div class="fit-field">
-          <label for="fit-ankle">Ankle</label>
-          <select id="fit-ankle" class="fit-select" aria-label="Ankle circumference cm"></select>
-        </div>
-      </div>
-    </section>
-
   </main>
 
   <footer class="landing-footer">
@@ -166,7 +117,6 @@
             <div class="form-field add-item-photo-field">
               <label>Photo</label>
               <input type="file" id="add-item-photo-file" accept="image/*" class="photo-file-input" aria-label="Choose image file">
-              <input type="file" id="add-item-photo-camera" accept="image/*" capture="environment" class="photo-file-input" aria-label="Take photo">
               <div class="add-item-photo-drop" id="add-item-photo-drop">
                 <div class="add-item-photo-preview" id="add-item-photo-preview" hidden>
                   <img id="add-item-photo-preview-img" src="" alt="">
@@ -183,10 +133,7 @@
                         </g>
                       </svg>
                     </span>
-                    <span class="add-item-photo-empty-text">Select a photo or drop it here!</span>
-                  </div>
-                  <div class="add-item-photo-actions">
-                    <button type="button" class="add-item-photo-btn" id="add-item-photo-camera-btn">Take photo</button>
+                    <span class="add-item-photo-empty-text">Add a photo or drop it here</span>
                   </div>
                 </div>
               </div>
